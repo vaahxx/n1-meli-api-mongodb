@@ -1,5 +1,13 @@
 const express = require("express")
 const app = express()
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/reprograma', {useNewUrlParser: true});
+const db = mongoose.connection;
+db.on('error', console.log.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('conexão feita com sucesso');
+});
 
 //rotas
 const index = require("./routes/index")
@@ -14,7 +22,7 @@ app.use(function(req, res, next) {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   )
-  next()
+  next();
 })
 
 app.use("/", index)

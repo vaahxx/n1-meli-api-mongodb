@@ -7,7 +7,7 @@ exports.get = (req, res) => {
 }
 
 exports.getById = (req, res) => {
-  const id = req.params.id
+  const id = Number(req.params.id)
   if (id > 34 || id <= 0) {
     res.redirect(301, "https://en.wikipedia.org/wiki/Man-in-the-middle_attack")
   }
