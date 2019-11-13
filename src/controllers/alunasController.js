@@ -2,11 +2,12 @@ const Alunas = require("../model/alunas.js")
 const fs = require('fs');
 
 exports.get = (req, res) => {
-  // console.log(req.url)
-  // res.status(200).send(alunas)
   Alunas.find((err, alunas) => {
-    console.log(alunas);
-  })
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.status(200).send(alunas);
+  });
 }
 
 exports.getById = (req, res) => {
@@ -30,13 +31,13 @@ exports.getBooks = (req, res) => {
 }
 
 exports.getSp = (req, res) => {
-  const nasceuSp = alunas.filter(aluna => {
-    console.log(aluna)
-    return aluna.nasceuEmSp == "true"
-  })
-  const meninasSp = nasceuSp.map(aluna => aluna.nome)
-
-  res.status(200).send(meninasSp)
+  // const nasceuSp = alunas.filter(aluna => aluna.nasceuEmSp == "true")
+  Alunas.find({"nasceuEmSp": true}, (err, paulistas) => {
+    if (err) res.status(500).send(err);
+    const meninasSp = paulistas.map(aluna => aluna.nome);
+    console.log(paulistas);
+    res.status(200).send(meninasSp);
+  });
 }
 
 exports.getAge = (req, res) => {
