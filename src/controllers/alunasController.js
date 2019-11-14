@@ -24,11 +24,13 @@ exports.getById = (req, res) => {
 
 exports.getBooks = (req, res) => {
   const id = req.params.id;
-  const alunas = Alunas.findById(id, (err, aluna) => {
+  Alunas.findById(id, (err, aluna) => {
     if (err) return res.status(500).send(err);
+
     if (!aluna) {
       return res.status(500).send({ message: `Não localizei a aluna de id ${id}` });
     }
+    
     const livrosAluna = aluna.livros;
     const livrosLidos = livrosAluna.filter(livro => livro.leu == "true");
     const tituloLivros = livrosLidos.map(livro => livro.titulo);
