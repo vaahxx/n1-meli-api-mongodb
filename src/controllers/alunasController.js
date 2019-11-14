@@ -30,7 +30,7 @@ exports.getBooks = (req, res) => {
     if (!aluna) {
       return res.status(500).send({ message: `Não localizei a aluna de id ${id}` });
     }
-    
+
     const livrosAluna = aluna.livros;
     const livrosLidos = livrosAluna.filter(livro => livro.leu == "true");
     const tituloLivros = livrosLidos.map(livro => livro.titulo);
@@ -49,16 +49,21 @@ exports.getSp = (req, res) => {
 }
 
 exports.getAge = (req, res) => {
-  const id = req.params.id
-  const aluna = alunas.find(item => item.id == id)
-  const dataNasc = aluna.dateOfBirth
-  const arrData = dataNasc.split("/")
-  const dia = arrData[0]
-  const mes = arrData[1]
-  const ano = arrData[2]
-  const idade = calcularIdade(ano, mes, dia)
-  res.status(200).send({ idade })
-}
+  const id = req.params.id;
+  Alunas.findById(id, (err, aluna) => {
+    if (err) return res.status(500).send(err);
+    if (!aluna) {
+      return res.status(500).send({ message: `Não localizei a aluna de id ${id}` });
+    }
+    const dataNasc = aluna.dateOfBirth
+    const arrData = dataNasc.split("/")
+    const dia = arrData[0]
+    const mes = arrData[1]
+    const ano = arrData[2]
+    const idade = calcularIdade(ano, mes, dia)
+    res.status(200).send({ idade })
+  })
+}  
 
 function calcularIdade(anoDeNasc, mesDeNasc, diaDeNasc) {
   const now = new Date()
