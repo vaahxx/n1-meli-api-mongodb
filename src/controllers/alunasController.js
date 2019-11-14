@@ -1,4 +1,5 @@
 const Alunas = require("../model/alunas.js")
+// const alunas = require("../model/alunas.json")
 const fs = require('fs');
 
 exports.get = (req, res) => {
@@ -12,22 +13,27 @@ exports.get = (req, res) => {
 
 exports.getById = (req, res) => {
   const id = req.params.id
-  if (id > 34 || id <= 0) {
-    res.redirect(301, "https://en.wikipedia.org/wiki/Man-in-the-middle_attack")
-  }
-  res.status(200).send(alunas.find(aluna => aluna.id == id))
+  Alunas.findById(id, (err, aluna) => {
+    if (err) return res.status(500).send(err);
+    if (!aluna) {
+      return res.status(500).send({ message: `Não localizei a aluna de id ${id}` });
+    }
+    res.status(200).send(aluna);
+  });
 }
 
 exports.getBooks = (req, res) => {
-  const id = req.params.id
-  const aluna = alunas.find(aluna => aluna.id == id)
-  if (!aluna) {
-    res.send("Nao encontrei essa garota")
-  }
-  const livrosAluna = aluna.livros
-  const livrosLidos = livrosAluna.filter(livro => livro.leu == "true")
-  const tituloLivros = livrosLidos.map(livro => livro.titulo)
-  res.send(tituloLivros)
+  const id = req.params.id;
+  const alunas = Alunas.findById(id, (err, aluna) => {
+    if (err) return res.status(500).send(err);
+    if (!aluna) {
+      return res.status(500).send({ message: `Não localizei a aluna de id ${id}` });
+    }
+    const livrosAluna = aluna.livros;
+    const livrosLidos = livrosAluna.filter(livro => livro.leu == "true");
+    const tituloLivros = livrosLidos.map(livro => livro.titulo);
+    res.status(200).send(tituloLivros);
+  });
 }
 
 exports.getSp = (req, res) => {
@@ -95,6 +101,6 @@ exports.postBooks = (req, res) => {
     }
     console.log("The file was saved!");
   });
-
   res.status(201).send(alunas[aluna.id - 1].livros);
 }
+
